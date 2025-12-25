@@ -1,0 +1,815 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="fashion-feedback">
+    <div class="feedback-header">
+        <h1 class="feedback-title">Обратная связь</h1>
+        <p class="feedback-subtitle">Поделитесь вашим мнением о нашем сайте. Ваш отзыв поможет нам стать лучше!</p>
+    </div>
+
+    {% if success %}
+    <div class="success-section">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
+            <div class="success-content">
+                <h3>Спасибо за ваш отзыв!</h3>
+                <p>Мы ценим ваше мнение и обязательно учтем все ваши пожелания для улучшения нашего сайта.</p>
+            </div>
+        </div>
+
+        <div class="submitted-data">
+            <div class="data-header">
+                <h3>📋 Ваши ответы</h3>
+            </div>
+            <div class="data-grid">
+                <div class="data-item">
+                    <div class="data-icon">👤</div>
+                    <div class="data-info">
+                        <span class="data-label">Имя</span>
+                        <span class="data-value">{{ submitted_data.name }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">📧</div>
+                    <div class="data-info">
+                        <span class="data-label">Email</span>
+                        <span class="data-value">{{ submitted_data.email }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">⭐</div>
+                    <div class="data-info">
+                        <span class="data-label">Общая оценка</span>
+                        <span class="data-value">{{ submitted_data.general_rating }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">🔍</div>
+                    <div class="data-info">
+                        <span class="data-label">Узнали о сайте</span>
+                        <span class="data-value">{{ submitted_data.discovery }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">🧭</div>
+                    <div class="data-info">
+                        <span class="data-label">Удобство навигации</span>
+                        <span class="data-value">{{ submitted_data.navigation_rating }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">👍</div>
+                    <div class="data-info">
+                        <span class="data-label">Рекомендация</span>
+                        <span class="data-value">{{ submitted_data.recommend }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">🕐</div>
+                    <div class="data-info">
+                        <span class="data-label">Частота посещений</span>
+                        <span class="data-value">{{ submitted_data.visit_frequency }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">❤️</div>
+                    <div class="data-info">
+                        <span class="data-label">Понравившиеся features</span>
+                        <span class="data-value">{{ submitted_data.liked_features }}</span>
+                    </div>
+                </div>
+                <div class="data-item">
+                    <div class="data-icon">📧</div>
+                    <div class="data-info">
+                        <span class="data-label">Рассылка</span>
+                        <span class="data-value">{{ submitted_data.newsletter }}</span>
+                    </div>
+                </div>
+                <div class="data-item full-width">
+                    <div class="data-icon">💡</div>
+                    <div class="data-info">
+                        <span class="data-label">Пожелания</span>
+                        <div class="data-text">{{ submitted_data.suggestions }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-center">
+            <a href="/feedback" class="fashion-btn">
+                📝 Заполнить еще один отзыв
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <form method="post" class="fashion-feedback-form">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>📝 Основная информация</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <div class="form-error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.email.label }}</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <div class="form-error">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>⭐ Оценка сайта</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.general_rating.label }}</label>
+                <!-- ИСПРАВЛЕНО: radio-group вместо rating-grid -->
+                <div class="radio-group">
+                    {% for choice in form.general_rating %}
+                    <div class="radio-item">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.general_rating.errors %}
+                <div class="form-error">{{ form.general_rating.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.navigation_rating.label }}</label>
+                <!-- ИСПРАВЛЕНО: radio-group вместо rating-grid -->
+                <div class="radio-group">
+                    {% for choice in form.navigation_rating %}
+                    <div class="radio-item">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.navigation_rating.errors %}
+                <div class="form-error">{{ form.navigation_rating.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>🔍 Детали посещения</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.discovery.label }}</label>
+                {{ form.discovery }}
+                {% if form.discovery.errors %}
+                <div class="form-error">{{ form.discovery.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.visit_frequency.label }}</label>
+                <!-- ИСПРАВЛЕНО: radio-group вместо rating-grid -->
+                <div class="radio-group">
+                    {% for choice in form.visit_frequency %}
+                    <div class="radio-item">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.visit_frequency.errors %}
+                <div class="form-error">{{ form.visit_frequency.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>❤️ Что понравилось</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label">{{ form.liked_features.label }}</label>
+                <!-- ОСТАВЛЯЕМ как feature-grid для checkbox -->
+                <div class="feature-grid">
+                    {% for choice in form.liked_features %}
+                    <div class="feature-item">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-hint">{{ form.liked_features.help_text }}</div>
+                {% if form.liked_features.errors %}
+                <div class="form-error">{{ form.liked_features.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>📢 Рекомендация</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">{{ form.recommend.label }}</label>
+                <!-- ИСПРАВЛЕНО: radio-group вместо rating-grid -->
+                <div class="radio-group">
+                    {% for choice in form.recommend %}
+                    <div class="radio-item">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.recommend.errors %}
+                <div class="form-error">{{ form.recommend.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="section-header">
+                <h3>💡 Ваши пожелания</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label">{{ form.suggestions.label }}</label>
+                {{ form.suggestions }}
+                <div class="form-hint">{{ form.suggestions.help_text }}</div>
+                {% if form.suggestions.errors %}
+                <div class="form-error">{{ form.suggestions.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    {{ form.privacy_agreement }}
+                    <label for="{{ form.privacy_agreement.id_for_label }}">{{ form.privacy_agreement.label }}</label>
+                </div>
+                {% if form.privacy_agreement.errors %}
+                <div class="form-error">{{ form.privacy_agreement.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    {{ form.newsletter_subscription }}
+                    <label for="{{ form.newsletter_subscription.id_for_label }}">{{ form.newsletter_subscription.label }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="fashion-btn fashion-btn-primary">
+                📤 Отправить отзыв
+            </button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<style>
+    .fashion-feedback {
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .feedback-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #e8e8e8;
+    }
+
+    .feedback-title {
+        font-size: 2.8rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .feedback-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        letter-spacing: 1px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Success Section */
+    .success-section {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .success-card {
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .success-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .success-content h3 {
+        color: #2c2c2c;
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+    }
+
+    .success-content p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    /* Submitted Data */
+    .submitted-data {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .data-header {
+        background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d9 100%);
+        padding: 20px 30px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .data-header h3 {
+            margin: 0;
+            color: #2c2c2c;
+            font-weight: 500;
+            font-size: 1.3rem;
+        }
+
+    .data-grid {
+        padding: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .data-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #f0f0f0;
+    }
+
+        .data-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+    .data-icon {
+        font-size: 1.2rem;
+        color: #d4a574;
+    }
+
+    .data-info {
+        flex: 1;
+    }
+
+    .data-label {
+        display: block;
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .data-value {
+        display: block;
+        color: #2c2c2c;
+        font-weight: 500;
+    }
+
+    .data-text {
+        color: #2c2c2c;
+        line-height: 1.6;
+        margin-top: 5px;
+    }
+
+    /* Action Center */
+    .action-center {
+        text-align: center;
+    }
+
+    /* Form Styles */
+    .fashion-feedback-form {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    .form-section {
+        margin-bottom: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+        }
+
+    .section-header {
+        margin-bottom: 25px;
+    }
+
+        .section-header h3 {
+            color: #2c2c2c;
+            font-size: 1.3rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c2c2c;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+        .form-label.required:after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        background: white;
+    }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+        font-family: inherit;
+    }
+
+    /* RADIO-кнопки - ИСПРАВЛЕНО */
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .radio-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .radio-item:hover {
+            border-color: #d4a574;
+            background: #f9f5f0;
+        }
+
+        .radio-item input[type="radio"] {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: #d4a574;
+        }
+
+        .radio-item label {
+            cursor: pointer;
+            color: #2c2c2c;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+    /* CHECKBOX-ы - для liked_features */
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .feature-item:hover {
+            border-color: #d4a574;
+            background: #f9f5f0;
+        }
+
+        .feature-item input[type="checkbox"] {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: #d4a574;
+        }
+
+        .feature-item label {
+            cursor: pointer;
+            color: #2c2c2c;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+    /* Checkbox Groups - для соглашений */
+    .checkbox-group {
+        margin-bottom: 15px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+    }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+            width: 18px;
+            height: 18px;
+            accent-color: #d4a574;
+        }
+
+        .checkbox-item label {
+            color: #2c2c2c;
+            cursor: pointer;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+    /* Form Hints & Errors */
+    .form-hint {
+        margin-top: 5px;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .form-error {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    /* Form Actions */
+    .form-actions {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .fashion-btn {
+        background: linear-gradient(135deg, #d4a574 0%, #b8865b 100%);
+        color: white;
+        border: none;
+        padding: 14px 40px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+        .fashion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .fashion-feedback {
+            padding: 30px 0;
+        }
+
+        .feedback-title {
+            font-size: 2.2rem;
+        }
+
+        .fashion-feedback-form {
+            padding: 25px;
+        }
+
+        .form-section {
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+
+        .data-grid {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+
+        .radio-group {
+            gap: 10px;
+        }
+
+        .feature-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .radio-item, .feature-item, .checkbox-item {
+            padding: 10px 12px;
+        }
+
+        .success-card {
+            padding: 25px;
+        }
+    }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. Анимация кнопки отправки
+    const submitBtn = document.querySelector('.fashion-btn-primary');
+    if (submitBtn) {
+        // Сохраняем исходные стили
+        const originalStyles = {
+            color: submitBtn.style.color || 'white',
+            boxShadow: submitBtn.style.boxShadow || 'none',
+            transform: submitBtn.style.transform || 'none'
+        };
+
+        // При наведении
+        submitBtn.addEventListener('mouseenter', function() {
+            this.style.color = '#fffacd'; // Светло-желтый
+            this.style.boxShadow = '0 8px 25px rgba(212, 165, 116, 0.4)';
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+        });
+
+        // При уходе курсора
+        submitBtn.addEventListener('mouseleave', function() {
+            this.style.color = originalStyles.color;
+            this.style.boxShadow = originalStyles.boxShadow;
+            this.style.transform = originalStyles.transform;
+        });
+
+        // При нажатии
+        submitBtn.addEventListener('mousedown', function() {
+            this.style.transform = 'translateY(-1px) scale(0.98)';
+        });
+
+        submitBtn.addEventListener('mouseup', function() {
+            this.style.transform = 'translateY(-3px) scale(1.02)';
+        });
+    }
+
+    // 2. Эффекты для полей ввода
+    const formInputs = document.querySelectorAll('input:not([type="checkbox"]):not([type="radio"]), textarea, select');
+
+    formInputs.forEach(function(input) {
+        const originalBorderColor = input.style.borderColor || '#e0e0e0';
+        const originalBgColor = input.style.backgroundColor || 'white';
+
+        // При фокусе
+        input.addEventListener('focus', function() {
+            this.style.backgroundColor = '#fff8dc'; // Светло-бежевый
+            this.style.borderColor = '#d4a574';     // Основной цвет темы
+            this.style.boxShadow = '0 0 0 3px rgba(212, 165, 116, 0.1)';
+        });
+
+        // При потере фокуса
+        input.addEventListener('blur', function() {
+            this.style.backgroundColor = originalBgColor;
+            this.style.borderColor = originalBorderColor;
+            this.style.boxShadow = 'none';
+        });
+
+        // При наведении
+        input.addEventListener('mouseenter', function() {
+            if (document.activeElement !== this) {
+                this.style.borderColor = '#c9c9c9';
+            }
+        });
+
+        input.addEventListener('mouseleave', function() {
+            if (document.activeElement !== this) {
+                this.style.borderColor = originalBorderColor;
+            }
+        });
+    });
+
+    // 3. Эффекты для радиокнопок и чекбоксов
+    const interactiveItems = document.querySelectorAll('.radio-item, .feature-item, .checkbox-item');
+
+    interactiveItems.forEach(function(item) {
+        const input = item.querySelector('input');
+        const label = item.querySelector('label');
+        const originalLabelColor = label ? label.style.color : '';
+
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px)';
+            this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            if (label) {
+                label.style.color = '#d4a574';
+            }
+        });
+
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0)';
+            this.style.boxShadow = 'none';
+            if (label && !input.checked) {
+                label.style.color = originalLabelColor || '#2c2c2c';
+            }
+        });
+
+        // Изменение цвета при выборе
+        if (input) {
+            input.addEventListener('change', function() {
+                if (this.checked && label) {
+                    label.style.color = '#d4a574';
+                    label.style.fontWeight = '600';
+                } else if (!this.checked && label) {
+                    label.style.color = originalLabelColor || '#2c2c2c';
+                    label.style.fontWeight = 'normal';
+                }
+            });
+        }
+    });
+
+    // 4. Валидация в реальном времени
+    const requiredFields = document.querySelectorAll('[required]');
+
+    requiredFields.forEach(function(field) {
+        field.addEventListener('blur', function() {
+            if (!this.value && this.type !== 'checkbox') {
+                this.style.borderColor = '#e74c3c';
+                this.style.backgroundColor = '#ffe6e6';
+            } else {
+                this.style.borderColor = '#e0e0e0';
+                this.style.backgroundColor = '#fff8dc';
+            }
+        });
+
+        field.addEventListener('input', function() {
+            if (this.value) {
+                this.style.borderColor = '#27ae60';
+                this.style.backgroundColor = '#f0fff4';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

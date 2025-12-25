@@ -1,0 +1,727 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="fashion-blog">
+    <!-- Шапка -->
+    <div class="fashion-header">
+        <div class="fashion-overlay">
+            <h1 class="fashion-title">Блог о моде и стиле</h1>
+            <div class="fashion-meta">
+                <span class="meta-badge">📚 {{ posts|length }} статей</span>
+                <span class="meta-badge">✨ Актуальные тенденции</span>
+                <span class="meta-badge">💬 {{ total_comments }} комментариев</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="fashion-container">
+        <!-- Если выбрана статья - показываем ее детально -->
+        {% if post_1 %}
+        <div class="article-detail">
+            <h2 class="article-title">{{ post_1.title }}</h2>
+            <div class="article-meta">
+                <span>📅 {{ post_1.posted|date:"d E Y" }}</span>
+                <span>🕒 {{ post_1.posted|date:"H:i" }}</span>
+                <span>💬 {{ comments.count }}</span>
+            </div>
+
+            {% if post_1.image and post_1.image.url != '/media/temp.jpg' %}
+            <div class="article-image">
+                <img src="{{ post_1.image.url }}" alt="{{ post_1.title }}" />
+            </div>
+            {% endif %}
+
+            <div class="article-content">
+                <h3>Краткое содержание</h3>
+                <p>{{ post_1.description|linebreaksbr }}</p>
+
+                <h3>Полное содержание</h3>
+                <div class="full-content">
+                    {{ post_1.content|linebreaksbr }}
+                </div>
+            </div>
+
+            <!-- Комментарии -->
+            <div class="comments-section">
+                <h3 class="section-title-comments">
+                    <span class="title-accent"></span>
+                    💬 Обсуждение ({{ comments.count }})
+                    <span class="title-accent"></span>
+                </h3>
+
+                <!-- Форма комментария -->
+                {% if user.is_authenticated %}
+                <div class="fashion-form-card">
+                    <div class="form-card-header">
+                        <div class="form-icon">✍️</div>
+                        <div>
+                            <h3>Добавить комментарий</h3>
+                            <p class="form-subtitle">Поделитесь вашим мнением</p>
+                        </div>
+                    </div>
+                    <div class="form-card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="form-label">
+                                    <label for="{{ form.text.id_for_label }}">{{ form.text.label }}</label>
+                                    <span class="label-hint">Ваши мысли о стиле и моде</span>
+                                </div>
+                                {{ form.text }}
+                                {% if form.text.errors %}
+                                <div class="form-error">
+                                    {{ form.text.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            <button type="submit" class="fashion-button fashion-button-primary">
+                                <span class="button-icon">📤</span>
+                                Отправить комментарий
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="fashion-auth-card">
+                    <div class="auth-icon">🔐</div>
+                    <div class="auth-content">
+                        <h3>Требуется авторизация</h3>
+                        <p>
+                            Чтобы участвовать в обсуждении модных тенденций, пожалуйста,
+                            <a href="{% url 'login' %}" class="auth-link">войдите</a> или
+                            <a href="{% url 'registration' %}" class="auth-link">зарегистрируйтесь</a>.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Список комментариев -->
+                <div class="comments-grid">
+                    {% for comment in comments %}
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <div class="comment-avatar">
+                                <div class="avatar-icon">👤</div>
+                            </div>
+                            <div class="comment-info">
+                                <h4 class="comment-author">{{ comment.author.username }}</h4>
+                                <div class="comment-meta">
+                                    <span class="meta-item">📅 {{ comment.date|date:"d E Y" }}</span>
+                                    <span class="meta-divider">•</span>
+                                    <span class="meta-item">🕒 {{ comment.date|date:"H:i" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comment-body">
+                            <p>{{ comment.text|linebreaksbr }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-comments">
+                        <div class="empty-icon">💭</div>
+                        <div class="empty-content">
+                            <h3>Обсуждение начинается с вас!</h3>
+                            <p>Будьте первым, кто поделится мнением о стиле и моде.</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Список всех статей -->
+        <div class="all-articles">
+            <h2 class="section-title">
+                <span class="title-accent"></span>
+                📚 Все статьи
+                <span class="title-accent"></span>
+            </h2>
+
+            <div class="articles-list">
+                {% for post in posts %}
+                <div class="article-item {% if post_1 and post.id == post_1.id %}active{% endif %}">
+                    <div class="article-item-image">
+                        {% if post.image and post.image.url != '/media/temp.jpg' %}
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+                        {% endif %}
+                    </div>
+                    <div class="article-item-content">
+                        <h4>
+                            <a href="{% url 'blogpost' parametr=post.id %}">{{ post.title }}</a>
+                        </h4>
+                        <div class="article-item-meta">
+                            <span>📅 {{ post.posted|date:"d E Y" }}</span>
+                            <span>💬 {{ post.comments.count }}</span>
+                        </div>
+                        <p class="article-item-excerpt">{{ post.description|truncatewords:20 }}</p>
+                        <a href="{% url 'blogpost' parametr=post.id %}" class="article-item-link">
+                            Читать →
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fashion-blog {
+        background: linear-gradient(135deg, #f9f5f0 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    /* Шапка статьи */
+    .fashion-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .fashion-overlay {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .fashion-title {
+        font-size: 3rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .fashion-meta {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .meta-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Контейнер */
+    .fashion-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Детальная статья */
+    .article-detail {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        margin-bottom: 60px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+    }
+
+    .article-title {
+        font-size: 2.5rem;
+        font-weight: 300;
+        color: #2c2c2c;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .article-meta {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin-bottom: 30px;
+        color: #888;
+        font-size: 0.95rem;
+    }
+
+    .article-image {
+        margin: 30px 0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+        .article-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+    .article-content {
+        margin: 40px 0;
+    }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #2c2c2c;
+            margin: 30px 0 15px 0;
+            border-bottom: 2px solid #f0e6d9;
+            padding-bottom: 10px;
+        }
+
+        .article-content p,
+        .full-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+    /* Раздел всех статей */
+    .all-articles {
+        margin-top: 60px;
+        padding-top: 40px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 300;
+        color: #2c2c2c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .title-accent {
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(90deg, #d4a574, #b8865b);
+    }
+
+    .section-title-comments {
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #2c2c2c;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .articles-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .article-item {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+
+        .article-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .article-item.active {
+            border: 2px solid #d4a574;
+        }
+
+    .article-item-image {
+        height: 180px;
+        overflow: hidden;
+    }
+
+        .article-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .article-item:hover .article-item-image img {
+        transform: scale(1.05);
+    }
+
+    .article-item-content {
+        padding: 20px;
+    }
+
+        .article-item-content h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+            .article-item-content h4 a {
+                color: #2c2c2c;
+                text-decoration: none;
+            }
+
+                .article-item-content h4 a:hover {
+                    color: #d4a574;
+                }
+
+    .article-item-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 0.85rem;
+        color: #888;
+        margin-bottom: 10px;
+    }
+
+    .article-item-excerpt {
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .article-item-link {
+        color: #d4a574;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+        .article-item-link:hover {
+            text-decoration: underline;
+        }
+
+    /* Стили для комментариев (взяты из вашего оригинального кода) */
+    .fashion-form-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin: 40px 0;
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg, #d4a574 0%, #b8865b 100%);
+        color: white;
+        padding: 25px 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .form-icon {
+        font-size: 2rem;
+    }
+
+    .form-card-header h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 400;
+    }
+
+    .form-subtitle {
+        margin: 5px 0 0 0;
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    .form-card-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+        .form-label label {
+            font-size: 1rem;
+            color: #2c2c2c;
+            font-weight: 500;
+        }
+
+    .label-hint {
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .form-group textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        resize: vertical;
+        min-height: 150px;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+
+    .form-error {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 8px;
+    }
+
+    .fashion-button {
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .fashion-button-primary {
+        background: linear-gradient(135deg, #d4a574 0%, #b8865b 100%);
+        color: white;
+    }
+
+        .fashion-button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+    .fashion-auth-card {
+        background: #fff8e1;
+        border: 1px solid #ffd54f;
+        border-radius: 10px;
+        padding: 30px;
+        margin: 40px 0;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+    }
+
+    .auth-icon {
+        font-size: 2.5rem;
+    }
+
+    .auth-content h3 {
+        margin: 0 0 10px 0;
+        color: #d4a574;
+    }
+
+    .auth-content p {
+        margin: 0;
+        color: #666;
+    }
+
+    .auth-link {
+        color: #d4a574;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+    .comments-grid {
+        display: grid;
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .comment-card {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+        transition: transform 0.3s ease;
+    }
+
+        .comment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .comment-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #f8f4ef 0%, #f0e6d9 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #d4a574;
+    }
+
+    .avatar-icon {
+        font-size: 1.5rem;
+    }
+
+    .comment-info {
+        flex: 1;
+    }
+
+    .comment-author {
+        margin: 0 0 5px 0;
+        color: #2c2c2c;
+        font-size: 1.1rem;
+    }
+
+    .comment-meta {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .meta-divider {
+        color: #ddd;
+    }
+
+    .comment-body {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+        .comment-body p {
+            margin: 0;
+        }
+
+    .empty-comments {
+        text-align: center;
+        padding: 60px 30px;
+        background: white;
+        border-radius: 10px;
+        border: 2px dashed #f0e6d9;
+    }
+
+    .empty-icon {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        color: #d4a574;
+    }
+
+    .empty-content h3 {
+        margin: 0 0 15px 0;
+        color: #2c2c2c;
+        font-weight: 400;
+    }
+
+    .empty-content p {
+        margin: 0;
+        color: #888;
+        font-size: 1.1rem;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .fashion-header {
+            padding: 50px 20px;
+        }
+
+        .fashion-title {
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .fashion-meta {
+            gap: 10px;
+        }
+
+        .meta-badge {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+
+        .article-detail {
+            padding: 25px;
+        }
+
+        .article-title {
+            font-size: 1.8rem;
+        }
+
+        .article-meta {
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .section-title,
+        .section-title-comments {
+            font-size: 1.6rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .title-accent {
+            width: 40px;
+        }
+
+        .articles-list {
+            grid-template-columns: 1fr;
+        }
+
+        .form-card-header {
+            padding: 20px;
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .fashion-auth-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .comment-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .comment-meta {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}

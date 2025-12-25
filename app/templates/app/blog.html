@@ -1,0 +1,305 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="fashion-blog">
+    <!-- Шапка блога -->
+    <div class="fashion-header">
+        <div class="fashion-overlay">
+            <h1 class="fashion-title">Блог о моде и стиле</h1>
+            <div class="fashion-meta">
+                <span class="meta-badge">📚 Все статьи о моде и стиле</span>
+                <span class="meta-badge">✨ Советы и обзоры</span>
+                <span class="meta-badge">👁️ {{ posts|length }} публикаций</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сетка статей -->
+    <div class="fashion-container">
+        {% if posts %}
+        <div class="posts-grid">
+            {% for post in posts %}
+            <article class="post-card">
+                {% if post.image and post.image.url != '/media/temp.jpg' %}
+                <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" />
+                    <div class="image-overlay"></div>
+                </div>
+                {% endif %}
+
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="post-date">📅 {{ post.posted|date:"d E Y" }}</span>
+                        <span class="post-comments">💬 {{ post.comment_set.count }}</span>
+                    </div>
+
+                    <h2 class="post-title">
+                        <a href="{% url 'blogpost' parametr=post.id %}">{{ post.title }}</a>
+                    </h2>
+
+                    <p class="post-description">{{ post.description|truncatewords:30 }}</p>
+
+                    <div class="post-footer">
+                        <a href="{% url 'blogpost' parametr=post.id %}" class="read-more">
+                            Читать далее
+                            <span class="arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-posts">
+            <div class="empty-icon">📝</div>
+            <div class="empty-content">
+                <h3>Статей пока нет</h3>
+                <p>Скоро здесь появятся интересные статьи о моде!</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .fashion-blog {
+        background: linear-gradient(135deg, #f9f5f0 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    /* Шапка блога */
+    .fashion-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .fashion-overlay {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .fashion-title {
+        font-size: 3rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .fashion-meta {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .meta-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Контейнер */
+    .fashion-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Сетка статей */
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 40px;
+        margin-bottom: 80px;
+    }
+
+    /* Карточка статьи */
+    .post-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+
+        .post-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .post-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+    .post-card:hover .post-image img {
+        transform: scale(1.05);
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3));
+    }
+
+    .post-content {
+        padding: 25px;
+    }
+
+    .post-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        color: #888;
+        font-size: 0.9rem;
+    }
+
+    .post-title {
+        margin: 0 0 15px 0;
+        font-size: 1.4rem;
+        font-weight: 400;
+        line-height: 1.4;
+    }
+
+        .post-title a {
+            color: #2c2c2c;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+            .post-title a:hover {
+                color: #d4a574;
+            }
+
+    .post-description {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+
+    .post-footer {
+        border-top: 1px solid #f0f0f0;
+        padding-top: 15px;
+    }
+
+    .read-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #d4a574;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+        .read-more:hover {
+            gap: 15px;
+            color: #b8865b;
+        }
+
+        .read-more .arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .read-more:hover .arrow {
+            transform: translateX(5px);
+        }
+
+    /* Пустой список */
+    .empty-posts {
+        text-align: center;
+        padding: 80px 30px;
+        background: white;
+        border-radius: 15px;
+        border: 2px dashed #f0e6d9;
+        margin: 40px 0;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 25px;
+        color: #d4a574;
+    }
+
+    .empty-content h3 {
+        margin: 0 0 15px 0;
+        color: #2c2c2c;
+        font-weight: 400;
+        font-size: 1.8rem;
+    }
+
+    .empty-content p {
+        margin: 0;
+        color: #888;
+        font-size: 1.1rem;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .fashion-header {
+            padding: 50px 20px;
+        }
+
+        .fashion-title {
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .fashion-meta {
+            gap: 10px;
+        }
+
+        .meta-badge {
+            padding: 8px 15px;
+            font-size: 0.85rem;
+        }
+
+        .posts-grid {
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .post-image {
+            height: 180px;
+        }
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-title {
+            font-size: 1.3rem;
+        }
+    }
+</style>
+{% endblock %}

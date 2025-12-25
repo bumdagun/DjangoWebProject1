@@ -1,0 +1,192 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="fashion-catalog">
+    <div class="catalog-header">
+        <h1 class="catalog-title">Каталог одежды</h1>
+        <p class="catalog-subtitle">Создаем стиль для вашей жизни</p>
+    </div>
+
+    <div class="fashion-grid">
+        <div class="fashion-card">
+            <div class="card-icon">🧥</div>
+            <h3 class="card-title">Пальто классическое</h3>
+            <p class="card-description">Бежевое, шерсть, размеры S-XL</p>
+            <div class="card-price">5 990 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+
+        <div class="fashion-card">
+            <div class="card-icon">👚</div>
+            <h3 class="card-title">Блуза шелковая</h3>
+            <p class="card-description">Белая, приталенная, размеры XS-L</p>
+            <div class="card-price">3 490 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+
+        <div class="fashion-card">
+            <div class="card-icon">👖</div>
+            <h3 class="card-title">Джинсы скинни</h3>
+            <p class="card-description">Синие, эластан, размеры 40-48</p>
+            <div class="card-price">4 790 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+
+        <div class="fashion-card">
+            <div class="card-icon">👗</div>
+            <h3 class="card-title">Платье коктейльное</h3>
+            <p class="card-description">Черное, атлас, размеры 42-46</p>
+            <div class="card-price">6 190 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+
+        <div class="fashion-card">
+            <div class="card-icon">🧶</div>
+            <h3 class="card-title">Свитер оверсайз</h3>
+            <p class="card-description">Серый, кашемир, размеры M-XXL</p>
+            <div class="card-price">4 590 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+
+        <div class="fashion-card">
+            <div class="card-icon">🩳</div>
+            <h3 class="card-title">Шорты летние</h3>
+            <p class="card-description">Белые, хлопок, размеры S-XL</p>
+            <div class="card-price">2 390 ₽</div>
+            <button class="fashion-btn">В корзину</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fashion-catalog {
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .catalog-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #e8e8e8;
+    }
+
+    .catalog-title {
+        font-size: 2.8rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .catalog-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        letter-spacing: 1px;
+    }
+
+    .fashion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .fashion-card {
+        background: white;
+        padding: 30px 25px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .fashion-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            border-color: #d4a574;
+        }
+
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+        color: #2c2c2c;
+        margin-bottom: 15px;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    .card-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        flex-grow: 1;
+    }
+
+    .card-price {
+        font-size: 1.5rem;
+        color: #d4a574;
+        font-weight: 600;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .fashion-btn {
+        background: linear-gradient(135deg, #d4a574 0%, #b8865b 100%);
+        color: white;
+        border: none;
+        padding: 12px 35px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        max-width: 200px;
+    }
+
+        .fashion-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+    @media (max-width: 768px) {
+        .fashion-catalog {
+            padding: 30px 0;
+        }
+
+        .catalog-title {
+            font-size: 2.2rem;
+        }
+
+        .fashion-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        .fashion-card {
+            padding: 25px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .fashion-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

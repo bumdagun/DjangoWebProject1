@@ -1,0 +1,887 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+{% load static %}
+
+<!-- Карусель -->
+<div class="fashion-carousel">
+    <div id="fashionCarousel" class="carousel-container">
+        <div class="carousel-track">
+            <!-- Слайд 1 -->
+            <div class="carousel-slide active">
+                <img src="{% static 'app/content/carousel1.jpg' %}" alt="Новая коллекция" class="slide-image">
+                <div class="slide-content">
+                    <h2 class="slide-title">Осенняя коллекция 2025</h2>
+                    <p class="slide-description">Теплые и стильные наряды для прохладных дней</p>
+                    <a href="/catalog" class="slide-btn">Смотреть коллекцию</a>
+                </div>
+            </div>
+
+            <!-- Слайд 2 -->
+            <div class="carousel-slide">
+                <img src="{% static 'app/content/carousel2.jpg' %}" alt="Скидки и акции" class="slide-image">
+                <div class="slide-content">
+                    <h2 class="slide-title">Скидки до 50%</h2>
+                    <p class="slide-description">Специальные предложения для наших покупателей</p>
+                    <a href="/catalog" class="slide-btn">Найти скидки</a>
+                </div>
+            </div>
+
+            <!-- Слайд 3 -->
+            <div class="carousel-slide">
+                <img src="{% static 'app/content/carousel3.jpg' %}" alt="Быстрая доставка" class="slide-image">
+                <div class="slide-content">
+                    <h2 class="slide-title">Бесплатная доставка</h2>
+                    <p class="slide-description">При заказе от 3000 рублей по всей России</p>
+                    <a href="/contact" class="slide-btn">Узнать условия</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки навигации -->
+        <button class="carousel-btn prev-btn" aria-label="Предыдущий слайд">
+            <span>‹</span>
+        </button>
+        <button class="carousel-btn next-btn" aria-label="Следующий слайд">
+            <span>›</span>
+        </button>
+
+        <!-- Индикаторы -->
+        <div class="carousel-indicators">
+            <button class="indicator active" data-index="0" aria-label="Перейти к слайду 1"></button>
+            <button class="indicator" data-index="1" aria-label="Перейти к слайду 2"></button>
+            <button class="indicator" data-index="2" aria-label="Перейти к слайду 3"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Основной контент -->
+<div class="fashion-home">
+    <div class="page-header">
+        <h1 class="brand-name">Clothes & Fashion</h1>
+        <p class="tagline">Стиль начинается здесь</p>
+        <p><a href="/catalog" class="btn-fashion btn-large">Открыть каталог &raquo;</a></p>
+    </div>
+
+    <!-- Преимущества -->
+    <div class="fashion-features">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">👗</div>
+                <h4>Популярные категории</h4>
+                <p>Откройте для себя самые модные коллекции одежды этого сезона</p>
+                <p><a class="btn-fashion-outline" href="/categories">Смотреть категории &raquo;</a></p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🆕</div>
+                <h4>Новые поступления</h4>
+                <p>Самые свежие и эксклюзивные модели уже в нашем магазине</p>
+                <p><a class="btn-fashion-outline" href="/catalog">Смотреть новинки &raquo;</a></p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💎</div>
+                <h4>Акции и скидки</h4>
+                <p>Специальные предложения для наших постоянных покупателей</p>
+                <p><a class="btn-fashion-outline" href="/catalog">Узнать об акциях &raquo;</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Новые статьи из блога -->
+    <div class="fashion-blog-preview">
+        <div class="section-header">
+            <h2>Последние статьи о моде</h2>
+            <p>Читайте актуальные тренды и советы стилистов</p>
+        </div>
+        <div class="blog-preview-grid">
+            {% for post in latest_posts|slice:":3" %}
+            <div class="blog-preview-card">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-preview-image">
+                {% else %}
+                <div class="blog-preview-placeholder">
+                    <span>📝</span>
+                </div>
+                {% endif %}
+                <div class="blog-preview-content">
+                    <h4><a href="{% url 'blogpost' post.id %}">{{ post.title }}</a></h4>
+                    <p class="blog-date">{{ post.posted|date:"d.m.Y" }}</p>
+                    <p>{{ post.description|truncatewords:20 }}</p>
+                    <a href="{% url 'blogpost' post.id %}" class="read-more">Читать дальше →</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-posts">
+                <p>Пока нет статей в блоге. <a href="/newpost">Добавить первую статью</a></p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="blog-link-center">
+            <a href="/blog" class="btn-fashion-outline">Все статьи блога &raquo;</a>
+        </div>
+    </div>
+
+    <!-- Призыв к действию -->
+    <div class="fashion-cta">
+        <div class="cta-content">
+            <h2>Готовы обновить гардероб?</h2>
+            <p>Подпишитесь на нашу рассылку и получите скидку 10% на первый заказ</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Введите ваш email" required class="newsletter-input">
+                <button type="submit" class="newsletter-btn">Подписаться</button>
+            </form>
+            <p class="newsletter-note">Подписываясь, вы соглашаетесь с нашей политикой конфиденциальности</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Стили для карусели */
+    .fashion-carousel {
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto 50px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .carousel-container {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+    }
+
+    .carousel-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-slide {
+        min-width: 100%;
+        position: relative;
+        height: 100%;
+    }
+
+    .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.8);
+    }
+
+    .slide-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #ffffff;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 20px;
+    }
+
+    .slide-title {
+        font-size: 3rem;
+        font-weight: 400; /* Увеличенная толщина для лучшей читаемости */
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.7); /* Усиленная тень */
+        animation: fadeInUp 0.8s ease;
+        color: #ffffff; /* Яркий белый */
+        letter-spacing: 1px; /* Улучшенный межбуквенный интервал */
+    }
+
+    .slide-description {
+        font-size: 1.3rem;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.6); /* Усиленная тень */
+        animation: fadeInUp 1s ease;
+        color: #f8f8f8; /* Светло-серый для контраста */
+        font-weight: 300;
+        line-height: 1.6; /* Улучшенный межстрочный интервал */
+    }
+
+    .slide-btn {
+        display: inline-block;
+        padding: 12px 35px;
+        background: #d4a574;
+        color: white;
+        text-decoration: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 600; /* Более жирный текст */
+        transition: all 0.3s ease;
+        border: 2px solid #d4a574;
+        animation: fadeInUp 1.2s ease;
+        letter-spacing: 0.5px; /* Улучшенная читаемость */
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+        .slide-btn:hover {
+            background: transparent;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(212, 165, 116, 0.5);
+            border-color: #ffffff;
+        }
+
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.25); /* Более прозрачный фон */
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.8rem; /* Увеличенные стрелки */
+        cursor: pointer;
+        z-index: 3;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px); /* Сильнее размытие */
+        font-weight: bold;
+    }
+
+        .carousel-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translateY(-50%) scale(1.15);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+    .prev-btn {
+        left: 25px;
+    }
+
+    .next-btn {
+        right: 25px;
+    }
+
+    .carousel-indicators {
+        position: absolute;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 3;
+    }
+
+    .indicator {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.4);
+        border: 2px solid rgba(255,255,255,0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 0;
+    }
+
+        .indicator.active {
+            background: #ffffff;
+            transform: scale(1.3);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .indicator:hover {
+            background: rgba(212, 165, 116, 0.8);
+            border-color: #d4a574;
+        }
+
+    /* Основные стили с улучшенными цветами */
+    .fashion-home {
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+        min-height: calc(100vh - 200px);
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 60px;
+        padding: 50px 0 30px;
+    }
+
+    .brand-name {
+        font-size: 3.5rem;
+        font-weight: 350; /* Оптимальная толщина для заголовка */
+        letter-spacing: 3px;
+        color: #1e1e1e; /* Более темный серый для лучшего контраста */
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        line-height: 1.2;
+    }
+
+    .tagline {
+        font-size: 1.4rem;
+        color: #555555; /* Средний серый для хорошей читаемости */
+        font-style: italic;
+        letter-spacing: 1px;
+        margin-bottom: 40px;
+        font-weight: 300;
+        line-height: 1.5;
+    }
+
+    .fashion-features {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        margin-bottom: 60px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 35px 25px;
+        border-radius: 10px; /* Более скругленные углы */
+        text-align: center;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.07); /* Мягкая тень */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+    .feature-icon {
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #d4a574; /* Цвет иконок в тон сайта */
+    }
+
+    .feature-card h4 {
+        font-size: 1.4rem;
+        color: #2a2a2a; /* Более темный цвет для заголовков */
+        margin-bottom: 15px;
+        font-weight: 600; /* Более жирный заголовок */
+        line-height: 1.3;
+    }
+
+    .feature-card p {
+        color: #555555; /* Улучшенный цвет текста */
+        line-height: 1.7; /* Увеличенный межстрочный интервал */
+        font-size: 1.05rem; /* Чуть увеличенный размер */
+        flex-grow: 1;
+        margin-bottom: 20px;
+        font-weight: 300;
+    }
+
+    .btn-fashion {
+        display: inline-block;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #d4a574 0%, #c89564 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 30px; /* Скругленные углы */
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border: none;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+    }
+
+        .btn-fashion:hover {
+            background: linear-gradient(135deg, #c89564 0%, #b8865b 100%);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
+        }
+
+    .btn-fashion-outline {
+        display: inline-block;
+        padding: 10px 25px;
+        background-color: transparent;
+        color: #d4a574;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        border: 2px solid #d4a574; /* Более толстая граница */
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+        .btn-fashion-outline:hover {
+            background-color: #d4a574;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.2);
+        }
+
+    .btn-large {
+        padding: 15px 50px;
+        font-size: 1.2rem;
+    }
+
+    /* Стили для предпросмотра блога */
+    .fashion-blog-preview {
+        max-width: 1200px;
+        margin: 0 auto 60px;
+        padding: 0 20px;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .section-header h2 {
+            font-size: 2.2rem;
+            font-weight: 350;
+            color: #2c2c2c;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .section-header p {
+            color: #666666;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+    .blog-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .blog-preview-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+        transition: transform 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+
+        .blog-preview-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+    .blog-preview-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .blog-preview-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f9f5f0 0%, #f0e6d9 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #d4a574;
+    }
+
+    .blog-preview-content {
+        padding: 25px;
+    }
+
+        .blog-preview-content h4 {
+            margin: 0 0 12px;
+            font-size: 1.25rem;
+            line-height: 1.4;
+        }
+
+            .blog-preview-content h4 a {
+                color: #2a2a2a;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .blog-preview-content h4 a:hover {
+                    color: #d4a574;
+                }
+
+    .blog-date {
+        color: #888888;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        font-weight: 300;
+    }
+
+    .blog-preview-content p {
+        color: #555555;
+        line-height: 1.7;
+        margin-bottom: 15px;
+        font-weight: 300;
+    }
+
+    .read-more {
+        color: #d4a574;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .read-more:hover {
+            text-decoration: underline;
+            color: #c89564;
+        }
+
+    .blog-link-center {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Стили для призыва к действию */
+    .fashion-cta {
+        background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%); /* Темный фон для контраста */
+        padding: 70px 20px;
+        text-align: center;
+        border-radius: 15px;
+        max-width: 1200px;
+        margin: 0 auto;
+        color: white;
+    }
+
+    .cta-content h2 {
+        font-size: 2.4rem;
+        font-weight: 350;
+        color: #ffffff;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    .cta-content p {
+        color: #f0f0f0;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto 35px;
+        line-height: 1.7;
+        font-weight: 300;
+    }
+
+    .newsletter-form {
+        display: flex;
+        max-width: 500px;
+        margin: 0 auto 20px;
+        gap: 10px;
+    }
+
+    .newsletter-input {
+        flex: 1;
+        padding: 14px 20px;
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 30px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+        .newsletter-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+            border-color: #d4a574;
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.2);
+        }
+
+    .newsletter-btn {
+        padding: 14px 35px;
+        background: #d4a574;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+    }
+
+        .newsletter-btn:hover {
+            background: #c89564;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 165, 116, 0.4);
+        }
+
+    .newsletter-note {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.6);
+        margin-top: 15px;
+        font-weight: 300;
+    }
+
+    .no-posts {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+        grid-column: 1 / -1;
+    }
+
+        .no-posts a {
+            color: #d4a574;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .no-posts a:hover {
+                text-decoration: underline;
+            }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Адаптивность */
+    @media (max-width: 1024px) {
+        .carousel-container {
+            height: 400px;
+        }
+
+        .slide-title {
+            font-size: 2.5rem;
+        }
+
+        .slide-description {
+            font-size: 1.1rem;
+        }
+
+        .brand-name {
+            font-size: 3rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .carousel-container {
+            height: 350px;
+        }
+
+        .slide-title {
+            font-size: 2rem;
+        }
+
+        .slide-description {
+            font-size: 1rem;
+        }
+
+        .slide-btn {
+            padding: 10px 25px;
+            font-size: 0.9rem;
+        }
+
+        .brand-name {
+            font-size: 2.5rem;
+        }
+
+        .features-grid,
+        .blog-preview-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .newsletter-form {
+            flex-direction: column;
+        }
+
+        .newsletter-input,
+        .newsletter-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .carousel-container {
+            height: 300px;
+        }
+
+        .slide-title {
+            font-size: 1.6rem;
+        }
+
+        .slide-description {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+        }
+
+        .fashion-carousel {
+            border-radius: 0;
+            margin-bottom: 30px;
+        }
+
+        .brand-name {
+            font-size: 2rem;
+        }
+
+        .btn-fashion.btn-large {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+        }
+
+        .cta-content h2 {
+            font-size: 1.8rem;
+        }
+
+        .cta-content p {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    // JavaScript для карусели
+    document.addEventListener('DOMContentLoaded', function () {
+        const track = document.querySelector('.carousel-track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const indicators = document.querySelectorAll('.indicator');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        // Функция для обновления карусели
+        function updateCarousel() {
+            // Обновляем позицию трека
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Обновляем активный слайд
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+
+            // Обновляем индикаторы
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Следующий слайд
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }
+
+        // Предыдущий слайд
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+
+        // Переход к конкретному слайду
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Добавляем обработчики событий
+        if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => goToSlide(index));
+        });
+
+        // Автопрокрутка каждые 5 секунд
+        let autoplay = setInterval(nextSlide, 5000);
+
+        // Останавливаем автопрокрутку при наведении мыши
+        const carouselContainer = document.querySelector('.carousel-container');
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', () => {
+                clearInterval(autoplay);
+            });
+
+            carouselContainer.addEventListener('mouseleave', () => {
+                autoplay = setInterval(nextSlide, 5000);
+            });
+        }
+
+        // Свайп на мобильных устройствах
+        if (carouselContainer) {
+            let startX = 0;
+            let endX = 0;
+
+            carouselContainer.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            carouselContainer.addEventListener('touchend', (e) => {
+                endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+
+                if (Math.abs(diff) > 50) { // Минимальное расстояние для свайпа
+                    if (diff > 0) {
+                        nextSlide(); // Свайп влево
+                    } else {
+                        prevSlide(); // Свайп вправо
+                    }
+                }
+            }, { passive: true });
+        }
+
+        // Обработка формы подписки на рассылку
+        const newsletterForm = document.querySelector('.newsletter-form');
+        if (newsletterForm) {
+            newsletterForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email = this.querySelector('.newsletter-input').value;
+
+                if (email && email.includes('@')) {
+                    alert(`Спасибо за подписку! На адрес ${email} отправлено письмо с подтверждением и промокодом на скидку.`);
+                    this.reset();
+                } else {
+                    alert('Пожалуйста, введите корректный email адрес.');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

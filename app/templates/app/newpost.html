@@ -1,0 +1,244 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="new-post-container">
+    <h1 class="fashion-post-title">👔 Добавить новую статью</h1>
+
+    {% if not user.is_superuser %}
+    <div class="fashion-alert">
+        <h4>🚫 Доступ запрещен</h4>
+        <p>Только администраторы могут добавлять новые статьи.</p>
+    </div>
+    {% else %}
+
+    <form method="POST" enctype="multipart/form-data" class="fashion-blog-form">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h3 class="section-title">Основная информация</h3>
+
+            <div class="form-group">
+                <label class="form-label required-field">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <div class="error-message">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required-field">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <div class="error-message">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">Медиа-контент</h3>
+
+            <div class="form-group">
+                <label class="form-label">{{ form.image.label }}</label>
+                {{ form.image }}
+                <div class="help-text">Рекомендуемый размер: 800x400px</div>
+                {% if form.image.errors %}
+                <div class="error-message">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">Содержание статьи</h3>
+
+            <div class="form-group">
+                <label class="form-label required-field">{{ form.content.label }}</label>
+                {{ form.content }}
+                {% if form.content.errors %}
+                <div class="error-message">{{ form.content.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-fashion btn-large">
+                📤 Опубликовать статью
+            </button>
+            <a href="/" class="btn-fashion-outline">Отмена</a>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<style>
+    .new-post-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .fashion-post-title {
+        font-size: 2.2rem;
+        font-weight: 300;
+        color: #2c2c2c;
+        text-align: center;
+        margin-bottom: 40px;
+        letter-spacing: 1px;
+    }
+
+    .fashion-blog-form {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border: 1px solid #f0f0f0;
+    }
+
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.8rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .section-title {
+        color: #2c2c2c;
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #d4a574;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #444;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.1);
+        }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn-fashion {
+        display: inline-block;
+        padding: 14px 40px;
+        background-color: #d4a574;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        .btn-fashion:hover {
+            background-color: #c89564;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+    .btn-fashion-outline {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: transparent;
+        color: #d4a574;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        border: 1px solid #d4a574;
+        transition: all 0.3s ease;
+        margin-left: 15px;
+    }
+
+        .btn-fashion-outline:hover {
+            background-color: #d4a574;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-large {
+        padding: 15px 50px;
+        font-size: 1.1rem;
+    }
+
+    .fashion-alert {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1.5rem;
+        border-radius: 4px;
+        text-align: center;
+        margin-bottom: 2rem;
+        border-left: 4px solid #f5c6cb;
+    }
+
+        .fashion-alert h4 {
+            margin-bottom: 10px;
+            color: #721c24;
+        }
+
+    .required-field::after {
+        content: " *";
+        color: #e74c3c;
+    }
+
+    .help-text {
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 0.5rem;
+        font-style: italic;
+    }
+
+    .error-message {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .fashion-blog-form {
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-fashion-outline {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+    }
+</style>
+{% endblock %}

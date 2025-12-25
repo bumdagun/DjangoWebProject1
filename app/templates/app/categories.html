@@ -1,0 +1,154 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<div class="fashion-categories">
+    <div class="categories-header">
+        <h1 class="categories-title">Категории одежды</h1>
+        <p class="categories-subtitle">Выберите категорию для просмотра коллекции</p>
+    </div>
+
+    <div class="fashion-grid">
+        <div class="category-card">
+            <div class="category-icon">👚</div>
+            <h3 class="category-title">Верхняя одежда</h3>
+            <p class="category-description">Пальто, куртки, пуховики</p>
+        </div>
+
+        <div class="category-card">
+            <div class="category-icon">👕</div>
+            <h3 class="category-title">Футболки</h3>
+            <p class="category-description">Базовые, принтованные, поло</p>
+        </div>
+
+        <div class="category-card">
+            <div class="category-icon">👖</div>
+            <h3 class="category-title">Джинсы</h3>
+            <p class="category-description">Скинни, прямые, бойфренды</p>
+        </div>
+
+        <div class="category-card">
+            <div class="category-icon">👗</div>
+            <h3 class="category-title">Платья</h3>
+            <p class="category-description">Вечерние, повседневные, офисные</p>
+        </div>
+
+        <div class="category-card">
+            <div class="category-icon">🩳</div>
+            <h3 class="category-title">Шорты</h3>
+            <p class="category-description">Джинсовые, спортивные, бермуды</p>
+        </div>
+
+        <div class="category-card">
+            <div class="category-icon">🧥</div>
+            <h3 class="category-title">Костюмы</h3>
+            <p class="category-description">Деловые, casual, тройки</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fashion-categories {
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        min-height: 100vh;
+    }
+
+    .categories-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #e8e8e8;
+    }
+
+    .categories-title {
+        font-size: 2.8rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .categories-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        letter-spacing: 1px;
+    }
+
+    .fashion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .category-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        cursor: pointer;
+    }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-color: #d4a574;
+        }
+
+    .category-icon {
+        font-size: 3.5rem;
+        margin-bottom: 25px;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .category-card:hover .category-icon {
+        transform: scale(1.1);
+    }
+
+    .category-title {
+        font-size: 1.4rem;
+        color: #2c2c2c;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .category-description {
+        color: #666;
+        font-size: 1rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .fashion-categories {
+            padding: 30px 0;
+        }
+
+        .categories-title {
+            font-size: 2.2rem;
+        }
+
+        .fashion-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        .category-card {
+            padding: 30px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .fashion-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
